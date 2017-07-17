@@ -1,0 +1,17 @@
+---
+- hosts: webserver
+  become: true
+  roles:
+  - utils
+  - sbt
+  - play
+  - scala
+
+- hosts: controller
+  become: true
+  roles:
+  - utils
+  - jenkins
+  - sbt
+  - deploy
+

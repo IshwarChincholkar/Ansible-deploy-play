@@ -1,0 +1,12 @@
+---
+# tasks file for scala
+
+- name: Download scala-{{ scala_version }}.deb
+  get_url:
+   url: http://www.scala-lang.org/files/archive/scala-{{ scala_version }}.deb
+   dest: /tmp/scala-{{ scala_version }}.deb
+
+- name: Install scala-{{ scala_version }}.deb package.
+  become: true
+  apt: 
+    deb: "/tmp/scala-{{ scala_version }}.deb"

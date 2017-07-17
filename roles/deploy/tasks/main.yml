@@ -1,0 +1,31 @@
+---
+# tasks file for deploy
+- name: Copy build to target machine at /opt
+  copy:
+    src: /var/lib/jenkins/workspace/PollApplication/target/universal/pollapplication-1.0.zip
+    dest: /tmp/pollapplication-1.0.zip
+    mode: 0777
+    directory_mode: 0755
+    backup: yes
+
+- name: UnZip the application file
+  unarchive: 
+     src: /tmp/pollapplication-1.0.zip 
+     dest: /opt
+     remote_src: True
+
+- name: Set application secret to "passw0rd"
+  lineinfile:
+    path: /opt/pollapplication-1.0/conf/application.conf
+    regexp: '^play.crypto.secret ='
+    line: 'play.crypto.secret = "passw0rd"'  
+
+- name: Transfer the script
+  copy: src=../files/run.sh dest=/opt/run.sh mode=0777 directory_mode=0755
+
+- name: Application access URL
+  debug:
+    msg: "{{ ansible_eth0.ipv4.address }}:9000"
+
+- name: Run the application
+  command: sh /opt/run.sh

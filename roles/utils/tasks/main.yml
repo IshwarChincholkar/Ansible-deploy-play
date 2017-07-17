@@ -1,0 +1,27 @@
+---
+# tasks file for utils
+- name: Ensure essential packages are installed
+  apt: pkg={{ item }} state=latest update_cache=yes
+  with_items:
+    - build-essential
+    - python-software-properties
+    - python-dev
+    - python-setuptools
+    - unzip
+    - curl
+
+- name: Add Java repository to sources
+  action: apt_repository repo='ppa:webupd8team/java'
+
+- name: Autoaccept license for Java
+  debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+
+- name: Update APT package cache
+  action: apt update_cache=yes
+
+- name: Install {{ Java_version }}
+  action: apt pkg=oracle-{{ Java_version }}-installer state=latest install_recommends=yes
+
+- name: Set {{ Java_version }} Env
+  action: apt pkg=oracle-{{ Java_version }}-set-default state=latest install_recommends=yes
+
